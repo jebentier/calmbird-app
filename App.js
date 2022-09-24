@@ -32,73 +32,68 @@ const styles = StyleSheet.create({
   },
 });
 
-const requestTokenURL = 'http://localhost:3000/mobile/request_token';
-const accessTokenURL  = 'http://localhost:3000/mobile/access_token';
+const oauth2AuthorizationURL = 'http://localhost:3000/mobile/oauth2_authorize';
+const oauth2FinalizeURL      = 'http://localhost:3000/mobile/oauth2_finalize';
+const timelineURL            = 'http://localhost:3000/mobile/timeline';
 
 const redirect = AuthSession.makeRedirectUri({ useProxy: true });
 
-/**
- * Converts an object to a query string.
- */
- function toQueryString(params) {
-  return (
-    '?' +
-    Object.entries(params)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      )
-      .join('&')
-  );
-}
-
 export default function App() {
-  const [username, setUsername] = useState();
-  const [oauthTokens, setOauthTokens] = useState();
+  const [user, setUser] = useState();
+  const [timeline, setTimeline] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
   const onLogout = useCallback(() => {
-    setUsername();
-    setOauthTokens();
+    setUser();
+    setTimeline();
     setLoading(false);
     setError();
   }, []);
 
-  const onLogin = useCallback(async () => {
+  const onOauth2Login = useCallback(async () => {
     setLoading(true);
 
     try {
-      // Step #1 - first we need to fetch a request token to start the browser-based authentication flow
-      const requestParams = toQueryString({ callback_url: redirect });
-      const requestTokens = await fetch(`${requestTokenURL}${requestParams}`).then((res) => res.json());
+      // Step #1 - first we need to fetch an authorization uri to start the browser-based authentication flow
+      const authUrlResponse = await fetch(
+        oauth2AuthorizationURL,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ callback_url: redirect })
+        }
+      );
+      const authUrlData = await authUrlResponse.json();
+      console.log('OAuth2 URL fetched!');
 
-      console.log('Request tokens fetched!');
-
-      // Step #2 - after we received the request tokens, we can start the auth session flow using these tokens
-      const authUrl = `https://api.twitter.com/oauth/authenticate${toQueryString(requestTokens)}`
-      const authResponse = await AuthSession.startAsync({ authUrl });
-
+      // Step #2 - after we received the authorization uri, we can start the auth flow using it
+      const authResponse = await AuthSession.startAsync({ authUrl: authUrlData.authorization_uri });
       console.log('Auth response received!');
 
       // Validate if the auth session response is successful
       // Note, we still receive a `authResponse.type = 'success'`, thats why we need to check on the params itself
-      if (authResponse.params && authResponse.params.denied) {
+      if (authResponse.params && authResponse.params.error) {
         return setError('AuthSession failed, user did not authorize the app');
       }
 
       // Step #3 - when the user (successfully) authorized the app, we will receive a verification code.
       // With this code we can request an access token and finish the auth flow.
-      const { oauth_token, oauth_token_secret, oauth_verifier } = authResponse.params;
-      const accessParams = toQueryString({ oauth_token, oauth_token_secret, oauth_verifier });
-      const accessTokens = await fetch(`${accessTokenURL}${accessParams}`).then((res) => res.json());
+      const { code } = authResponse.params;
+      const { code_verifier } = authUrlData;
+      const finalizedResponse = await fetch(
+        oauth2FinalizeURL,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, code_verifier, callback_url: redirect })
+        }
+      );
+      const finalizedData = await finalizedResponse.json();
+      console.log('OAuth2 finalized!');
 
-      console.log('Access tokens fetched!');
-
-      // Now let's store the username in our state to render it.
-      // You might want to store the `oauth_token` and `oauth_token_secret` for future use.
-      setUsername(accessTokens.screen_name);
-      setOauthTokens({ oauth_token: accessTokens.oauth_token, oauth_token_secret: accessTokens.oauth_token_secret });
+      // Now let's store the user and token in our state to render it.
+      setUser(finalizedData);
     } catch (error) {
       console.log('Something went wrong...', error);
       setError(error.message);
@@ -107,19 +102,27 @@ export default function App() {
     }
   }, []);
 
+  const getTimeline = useCallback(async () => {
+    const timeline = await fetch(`${timelineURL}`, { headers: { 'Authorization': user.token } }).then((res) => res.json());
+    setTimeline(timeline);
+  }, [user]);
+
   return (
     <View style={styles.container}>
-      {username !== undefined ? (
+      {user !== undefined ? (
         <View>
-          <Text style={styles.title}>Hi {username}!</Text>
+          <Text style={styles.title}>Hi {user.username}!</Text>
+          <Button title="Get timeline" onPress={getTimeline} />
           <Button title="Logout to try again" onPress={onLogout} />
         </View>
       ) : (
         <View>
           <Text style={styles.title}>Example: Twitter login</Text>
-          <Button title="Login with Twitter" onPress={onLogin} />
+          <Button title="Login with Twitter" onPress={onOauth2Login} />
         </View>
       )}
+
+      {timeline !== undefined && <Text>{JSON.stringify(timeline, 2)}</Text>}
 
       {error !== undefined && <Text style={styles.error}>Error: {error}</Text>}
 
