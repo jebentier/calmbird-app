@@ -22,4 +22,33 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginTop: 40,
   },
+  tweet: {
+    padding: 15,
+    flex: 1,
+  },
+  tweetAuthor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyItems: 'flex-start',
+    marginBottom: 10,
+  },
+  tweetAuthorImage: {
+    marginRight: 10,
+  },
+  tweetAuthorName: {
+    fontSize: 16,
+    margin: 'auto',
+    marginRight: 5,
+  },
+  tweetAuthorUsername: {
+    fontSize: 12,
+    margin: 'auto',
+    color: '#666',
+  },
+  timestamp: {
+    fontSize: 11,
+  },
+  badge: {
+    padding: 10,
+  }
 });

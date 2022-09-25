@@ -5,8 +5,13 @@ import * as AuthSession from 'expo-auth-session';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { View } from 'react-native';
+
 import LoginScreen from './screens/Login';
-import HomeScreen from './screens/Home';
+import FeedScreen from './screens/Feed';
+import DiscoverScreen from './screens/Discover';
+import LikesScreen from './screens/Likes';
+import FollowingScreen from './screens/Following';
+import TweetsScreen from './screens/Tweets';
 
 const oauth2AuthorizationURL = 'http://localhost:3000/mobile/oauth2_authorize';
 const oauth2FinalizeURL      = 'http://localhost:3000/mobile/oauth2_finalize';
@@ -129,19 +134,19 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="My Feed" drawerContent={(props) => <CustomDrawerContent {...props} onLogout={onLogout} />}>
         <Drawer.Screen name="My Feed">
-          {(props) => <HomeScreen {...props} user={user} loading={loading} error={error} />}
+          {(props) => <FeedScreen {...props} user={user} loading={loading} error={error} />}
         </Drawer.Screen>
         <Drawer.Screen name="My Tweets">
-          {(props) => <HomeScreen {...props} user={user} loading={loading} error={error} />}
+          {(props) => <DiscoverScreen {...props} user={user} loading={loading} error={error} />}
         </Drawer.Screen>
         <Drawer.Screen name="Likes">
-          {(props) => <HomeScreen {...props} user={user} loading={loading} error={error} />}
+          {(props) => <LikesScreen {...props} user={user} loading={loading} error={error} />}
         </Drawer.Screen>
         <Drawer.Screen name="Following">
-          {(props) => <HomeScreen {...props} user={user} loading={loading} error={error} />}
+          {(props) => <FollowingScreen {...props} user={user} loading={loading} error={error} />}
         </Drawer.Screen>
         <Drawer.Screen name="Discover">
-          {(props) => <HomeScreen {...props} user={user} loading={loading} error={error} />}
+          {(props) => <TweetsScreen {...props} user={user} loading={loading} error={error} />}
         </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
