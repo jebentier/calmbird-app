@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux'
 import {
   StyleSheet,
   ActivityIndicator,
@@ -10,7 +11,9 @@ import { authedFetch } from '../shared/api';
 import Tweet from '../shared/tweet';
 import styles from '../shared/styles';
 
-export default function Feed({ user }) {
+export default Feed = () => {
+  const user = useSelector((state) => state.auth.user)
+
   const [feed, setFeed] = useState();
   const [loading, setLoading] = useState();
   const [error, setError] = useState();
@@ -36,4 +39,4 @@ export default function Feed({ user }) {
       }
     </View>
   );
-}
+};

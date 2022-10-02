@@ -5,7 +5,9 @@ import {
 } from 'react-native';
 import styles from '../shared/styles';
 
-export default function Following({ user }) {
+export default function Following() {
+  const user = useSelector((state) => state.auth.user)
+
   return (
     <View style={styles.container}>
       <View>

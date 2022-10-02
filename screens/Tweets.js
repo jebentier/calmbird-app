@@ -5,7 +5,9 @@ import {
 } from 'react-native';
 import styles from '../shared/styles';
 
-export default function Tweets({ user }) {
+export default function Tweets() {
+  const user = useSelector((state) => state.auth.user)
+
   return (
     <View style={styles.container}>
       <View>
