@@ -48,6 +48,12 @@ export default StyleSheet.create({
   timestamp: {
     fontSize: 11,
   },
+  descriptionText: {
+    fontSize: 12,
+    flex: 1,
+    textAlign: 'justify',
+    flexWrap: 'wrap'
+  },
   badge: {
     padding: 10,
   }

@@ -103,8 +103,8 @@ const QuotedTweet = ({
       <View style={{ paddingLeft: 60 }}>
         <Text>{text}</Text>
       </View>
-      <View style={{ paddingLeft: 60, marginBottom: 10, transform: [{ scale: 0.9 }] }}>
-        <StatusTweet {...referenced_tweet} includeBadges={false} />
+      <View style={{ paddingLeft: 60, marginBottom: 10, transform: [{ scale: 0.9 }], maxWidth: '100%' }}>
+        <StatusTweet {...referenced_tweet} includeBadges={false} maxNameLength={25} />
       </View>
       {currentUserId === authorId ?
         <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
@@ -124,9 +124,13 @@ const StatusTweet = ({
   created_at,
   text,
   metrics: { like_count, reply_count, retweet_count, quote_count },
-  includeBadges = true
+  includeBadges = true,
+  maxNameLength = 35,
 }) => {
   const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
+
+  const fullNameLength = name.length + username.length + 1;
+  const truncatedName = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
 
   return (
     <View style={[styles.tweet, includeBadges ? { borderBottomColor: '#eee', borderBottomWidth: 1 } : { borderColor: '#999', borderWidth: 1, borderRadius: 10 }]}>
@@ -134,7 +138,7 @@ const StatusTweet = ({
         <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
         <View>
           <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
-            <Text style={styles.tweetAuthorName}>{name}</Text>
+            <Text style={styles.tweetAuthorName}>{truncatedName}</Text>
             <Text style={styles.tweetAuthorUsername}>@{username}</Text>
           </View>
           <Text style={styles.timestamp}>

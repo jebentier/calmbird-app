@@ -10,7 +10,7 @@ import { authedFetch } from '../shared/api';
 import Tweet from '../shared/tweet';
 import styles from '../shared/styles';
 
-export default () => {
+export default Tweets = () => {
   const user = useSelector((state) => state.auth.user)
 
   const [content, setContent] = useState();

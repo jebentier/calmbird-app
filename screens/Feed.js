@@ -17,13 +17,13 @@ export default Feed = () => {
   const [loading, setLoading] = useState();
   const [error, setError] = useState();
 
-  const loadTimeline = () => {
-    authedFetch('timeline', { token: user.token, setError, setLoading }).then(setFeed);
+  const loadFeed = () => {
+    authedFetch('feed', { token: user.token, setError, setLoading }).then(setFeed);
   };
 
-  const onRefresh = useCallback(loadTimeline);
+  const onRefresh = useCallback(loadFeed);
 
-  useEffect(loadTimeline, [user]);
+  useEffect(loadFeed, [user]);
 
   return (
     <View style={styles.container}>
