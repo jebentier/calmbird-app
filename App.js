@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import 'react-native-gesture-handler';
 
 import React from 'react';
@@ -5,6 +6,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { View } from 'react-native';
+import { PersistGate } from 'redux-persist/integration/react'
 
 import LoginScreen from './screens/Login';
 import FeedScreen from './screens/Feed';
@@ -13,7 +15,7 @@ import LikesScreen from './screens/Likes';
 import FollowingScreen from './screens/Following';
 import TweetsScreen from './screens/Tweets';
 
-import { store } from './redux/store';
+import { EncryptionGate, StoreGate } from './redux/store';
 import { logout, selectUser } from './redux/authSlice';
 
 const Drawer = createDrawerNavigator();
@@ -65,9 +67,19 @@ const App = () => {
 
 
 export default AppWrapper = () => (
-  <Provider store={store}>
-    <NavigationContainer>
-      <App />
-    </NavigationContainer>
-  </Provider>
+  <EncryptionGate>
+    {(encryptionKey) => (
+      <StoreGate encryptionKey={encryptionKey}>
+        {({ store, persistor }) => (
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <NavigationContainer>
+                <App />
+              </NavigationContainer>
+            </PersistGate>
+          </Provider>
+        )}
+      </StoreGate>
+    )}
+  </EncryptionGate>
 );
