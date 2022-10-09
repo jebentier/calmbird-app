@@ -65,7 +65,6 @@ const App = () => {
   );
 }
 
-
 export default AppWrapper = () => (
   <EncryptionGate>
     {(encryptionKey) => (

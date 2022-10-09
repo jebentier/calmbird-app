@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux'
 import {
-  StyleSheet,
-  ActivityIndicator,
   Text,
   View,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 import { authedFetch } from '../shared/api';
 import Tweet from '../shared/tweet';
@@ -18,23 +17,25 @@ export default Feed = () => {
   const [loading, setLoading] = useState();
   const [error, setError] = useState();
 
-  useEffect(() => {
+  const loadTimeline = () => {
     authedFetch('timeline', { token: user.token, setError, setLoading }).then(setFeed);
-  }, [user]);
+  };
+
+  const onRefresh = useCallback(loadTimeline);
+
+  useEffect(loadTimeline, [user]);
 
   return (
     <View style={styles.container}>
-      {loading && (
-        <View style={[StyleSheet.absoluteFill, styles.loading]}>
-          <ActivityIndicator color="#fff" size="large" animating />
-        </View>
-      )}
       {error !== undefined && <Text style={styles.error}>Error: {error}</Text>}
       {feed !== undefined &&
         <FlatList
           contentContainerStyle={{ paddingBottom: 25 }}
           data={ feed.tweets }
           renderItem={({ item }) => (<Tweet {...item} currentUser={user} />)}
+          refreshControl={
+            <RefreshControl refreshing={loading} {...{onRefresh }} />
+          }
         />
       }
     </View>
