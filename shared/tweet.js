@@ -54,7 +54,6 @@ const TweetActions = ({ id, authToken, liked: likedProp = false, retweeted: retw
 };
 
 const Attachment = ({ type, ...data}) => {
-  console.log(type, data);
   switch (type) {
     case 'photo':
       return <Image source={{ uri: data.url }} style={{ width: 100, height: 100, borderRadius: 5, margin: 5 }} />;

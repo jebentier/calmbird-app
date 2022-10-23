@@ -1,21 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
 } from 'react-native';
 import { Avatar, Chip } from "@rneui/themed";
+import { authedFetch } from './api';
 import styles from '../shared/styles';
 
-const AccountActions = ({ following, inFeed, muted, blocked }) => (
-  <View style={{ paddingLeft: 60, flexDirection: 'row', justifyContent: 'flex-start' }}>
-    <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#009688", marginRight: 15 }} title={following ? 'Unfollow' : 'Follow'} />
-    <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "orange", marginRight: 15 }} title={inFeed ? 'Remove from Feed' : 'Add to Feed'} />
-    <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "grey", marginRight: 15 }} title={muted ? 'Unmute' : 'Mute'} />
-    <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#e91e63", marginRight: 15 }} title={blocked ? 'Unblock' : 'Block'} />
-  </View>
-);
+const AccountActions = ({ id, authToken, following: followingProp, inFeed: inFeedProp, muted: mutedProp, blocked: blockedProp }) => {
+  const [following, setFollowing] = useState(followingProp);
+  const [inFeed, setInFeed]       = useState(inFeedProp);
+  const [muted, setMuted]         = useState(mutedProp);
+  const [blocked, setBlocked]     = useState(blockedProp);
 
-export default function Account({ profile_image_url, name, username, description, following, inFeed, muted, blocked }) {
+  const onFollow = async () => {
+    const verb = following ? 'unfollow' : 'follow';
+    const response = await authedFetch(`users/${id}/${verb}`, { token: authToken });
+    response.success && setFollowing(!following);
+  };
+
+  const onMute = async () => {
+    const verb = muted ? 'unmute' : 'mute';
+    const response = await authedFetch(`users/${id}/${verb}`, { token: authToken });
+    response.success && setMuted(!muted);
+  };
+
+  const onBlock = async () => {
+    const verb = blocked ? 'unblock' : 'block';
+    const response = await authedFetch(`users/${id}/${verb}`, { token: authToken });
+    response.success && setBlocked(!blocked);
+  };
+
+  const onFeed = async () => {
+    const verb = inFeed ? 'remove' : 'add';
+    const response = await authedFetch(`feed/${verb}/${id}`, { token: authToken });
+    response.success && setInFeed(!inFeed);
+  };
+
+  return (
+    <View style={{ paddingLeft: 60, flexDirection: 'row', justifyContent: 'flex-start' }}>
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#009688", marginRight: 15 }} title={following ? 'Unfollow' : 'Follow'} onPress={onFollow} />
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "orange", marginRight: 15 }} title={inFeed ? 'Remove from Feed' : 'Add to Feed'} onPress={onFeed} />
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "grey", marginRight: 15 }} title={muted ? 'Unmute' : 'Mute'} onPress={onMute} />
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#e91e63", marginRight: 15 }} title={blocked ? 'Unblock' : 'Block'} onPress={onBlock} />
+    </View>
+  );
+};
+
+export default function Account({ id, profile_image_url, name, username, description, following, inFeed, muted, blocked, currentUser: { token: authToken } }) {
   const maxNameLength  = 35;
   const fullNameLength = name.length + username.length + 1;
   const truncatedName  = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
@@ -36,7 +68,7 @@ export default function Account({ profile_image_url, name, username, description
           </View>
         </View>
       </View>
-      <AccountActions {...{ following, inFeed, muted, blocked }} />
+      <AccountActions {...{ id, authToken, following, inFeed, muted, blocked }} />
     </View>
   );
 }

@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { authedFetch } from '../shared/api';
+import FlatListSeparator from '../shared/FlatListSeparator';
 import Tweet from '../shared/tweet';
 import styles from '../shared/styles';
 
@@ -33,6 +34,7 @@ export default Feed = () => {
           contentContainerStyle={{ paddingBottom: 25 }}
           data={ feed.tweets }
           renderItem={({ item }) => (<Tweet {...item} currentUser={user} />)}
+          ItemSeparatorComponent={FlatListSeparator}
           refreshControl={
             <RefreshControl refreshing={loading} {...{onRefresh }} />
           }

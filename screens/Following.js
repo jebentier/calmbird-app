@@ -33,7 +33,7 @@ export default function Following() {
         <FlatList
           contentContainerStyle={{ paddingBottom: 25 }}
           data={ content.users }
-          renderItem={({ item }) => (<Account {...item} />)}
+          renderItem={({ item }) => (<Account {...item} currentUser={user} />)}
           ItemSeparatorComponent={FlatListSeparator}
           refreshControl={
             <RefreshControl refreshing={loading} {...{onRefresh }} />
