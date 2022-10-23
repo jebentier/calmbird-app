@@ -133,7 +133,7 @@ const StatusTweet = ({
   const truncatedName = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
 
   return (
-    <View style={[styles.tweet, includeBadges ? { borderBottomColor: '#eee', borderBottomWidth: 1 } : { borderColor: '#999', borderWidth: 1, borderRadius: 10 }]}>
+    <View style={[styles.tweet, includeBadges ? {} : { borderColor: '#999', borderWidth: 1, borderRadius: 10 }]}>
       <View style={styles.tweetAuthor}>
         <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
         <View>

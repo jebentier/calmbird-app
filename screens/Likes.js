@@ -6,6 +6,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
+import FlatListSeparator from '../shared/FlatListSeparator';
 import { authedFetch } from '../shared/api';
 import Tweet from '../shared/tweet';
 import styles from '../shared/styles';
@@ -33,6 +34,7 @@ export default Likes = () => {
           contentContainerStyle={{ paddingBottom: 25 }}
           data={ content.tweets }
           renderItem={({ item }) => (<Tweet {...item} currentUser={user} />)}
+          ItemSeparatorComponent={FlatListSeparator}
           refreshControl={
             <RefreshControl refreshing={loading} {...{onRefresh }} />
           }

@@ -6,6 +6,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
+import FlatListSeparator from '../shared/FlatListSeparator';
 import { authedFetch } from '../shared/api';
 import Account from '../shared/account';
 import styles from '../shared/styles';
@@ -33,6 +34,7 @@ export default function Following() {
           contentContainerStyle={{ paddingBottom: 25 }}
           data={ content.users }
           renderItem={({ item }) => (<Account {...item} />)}
+          ItemSeparatorComponent={FlatListSeparator}
           refreshControl={
             <RefreshControl refreshing={loading} {...{onRefresh }} />
           }
