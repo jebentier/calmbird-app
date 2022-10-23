@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:3000/mobile';
 
-const authedFetch = async (path, { token, setError, setLoading }, options = {}) => {
+const authedFetch = async (path, { token, setError = () => {}, setLoading = () => {} }, options = {}) => {
   setLoading(true);
   try {
     const response = await fetch(`${BASE_URL}/${path}`, {

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
 } from 'react-native';
 import { Avatar, Chip } from "@rneui/themed";
+import { authedFetch } from './api';
 import styles from '../shared/styles';
 
 const timestampDisplayOptions = {
@@ -25,12 +26,27 @@ const TweetBadges = ({ like_count, quote_count, retweet_count, reply_count }) =>
   );
 };
 
-const TweetActions = ({ id, liked = false, retweeted = false }) => {
+const TweetActions = ({ id, authToken, liked: likedProp = false, retweeted: retweetedProp = false }) => {
+  const [liked, setLiked]         = useState(likedProp);
+  const [retweeted, setRetweeted] = useState(retweetedProp);
+
+  const onLike = async () => {
+    const verb = liked ? 'unlike' : 'like';
+    const response = await authedFetch(`tweets/${id}/${verb}`, { token: authToken });
+    response.success && setLiked(!liked);
+  };
+
+  const onRetweet = async () => {
+    const verb = retweeted ? 'unretweet' : 'retweet';
+    const response = await authedFetch(`tweets/${id}/${verb}`, { token: authToken });
+    response.success && setRetweeted(!retweeted);
+  };
+
   return (
     <View style={{ paddingLeft: 60, flexDirection: 'row', justifyContent: 'flex-start' }}>
-      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#e91e63", marginRight: 15 }} title={liked ? 'Unlike' : 'Like'} />
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#e91e63", marginRight: 15 }} title={liked ? 'Unlike' : 'Like'} onPress={onLike} />
       <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#009688", marginRight: 15 }} title='Quote' />
-      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#4caf50", marginRight: 15 }} title={retweeted ? 'Unretweet' : 'Retweet'} />
+      <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#4caf50", marginRight: 15 }} title={retweeted ? 'Unretweet' : 'Retweet'} onPress={onRetweet} />
       <Chip size='sm' titleStyle={{ fontSize: 10 }} buttonStyle={{ backgroundColor: "#ff6f00", marginRight: 15 }} title='Reply' />
     </View>
   );
@@ -40,7 +56,7 @@ const ReTweet = ({
   id,
   liked,
   retweeted,
-  currentUser: { id: currentUserId },
+  currentUser: { id: currentUserId, token: authToken },
   author: { profile_image_url, name, username, id: authorId },
   referenced_tweet: { created_at, text, author: { username: originalAuthor } },
   metrics: { like_count, reply_count, retweet_count, quote_count }
@@ -68,7 +84,7 @@ const ReTweet = ({
       </View>
       {currentUserId === authorId ?
         <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
-        <TweetActions {...{ id, liked, retweeted }} />}
+        <TweetActions {...{ id, liked, retweeted, authToken }} />}
     </View>
   );
 };
@@ -77,7 +93,7 @@ const QuotedTweet = ({
   id,
   liked,
   retweeted,
-  currentUser: { id: currentUserId },
+  currentUser: { id: currentUserId, token: authToken },
   author: { profile_image_url, name, username, id: authorId },
   created_at,
   text,
@@ -108,7 +124,7 @@ const QuotedTweet = ({
       </View>
       {currentUserId === authorId ?
         <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
-        <TweetActions {...{ id, liked, retweeted }} />}
+        <TweetActions {...{ id, liked, retweeted, authToken }} />}
     </View>
   );
 };
@@ -119,7 +135,7 @@ const StatusTweet = ({
   id,
   liked,
   retweeted,
-  currentUser: { id: currentUserId  } = {},
+  currentUser: { id: currentUserId, token: authToken  } = {},
   author: { profile_image_url, name, username, id: authorId },
   created_at,
   text,
@@ -150,7 +166,7 @@ const StatusTweet = ({
         <Text>{text}</Text>
       </View>
       {includeBadges && currentUserId === authorId && <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} />}
-      {includeBadges && currentUserId !== authorId && <TweetActions {...{ id, liked, retweeted }} />}
+      {includeBadges && currentUserId !== authorId && <TweetActions {...{ id, liked, retweeted, authToken }} />}
     </View>
   );
 };
