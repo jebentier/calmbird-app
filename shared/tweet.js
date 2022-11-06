@@ -93,7 +93,7 @@ const ReTweet = ({
         <Text>RT @{originalAuthor}:</Text>
         <Text></Text>
         <Text>{text}</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: 250 }}>
           { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
         </View>
       </View>
@@ -180,7 +180,7 @@ const StatusTweet = ({
       </View>
       <View style={{ paddingLeft: 60, marginBottom: 10 }}>
         <Text>{text}</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: 250 }}>
           { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
         </View>
       </View>
