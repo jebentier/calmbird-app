@@ -53,7 +53,7 @@ const App = () => {
         <Drawer.Screen name="My Tweets" component={TweetsScreen} />
         <Drawer.Screen name="Likes" component={LikesScreen} />
         <Drawer.Screen name="Following" component={FollowingScreen} />
-        <Drawer.Screen name="Discover" component={DiscoverScreen} />
+        {/* <Drawer.Screen name="Discover" component={DiscoverScreen} /> */}
       </Drawer.Navigator>
     );
   }
