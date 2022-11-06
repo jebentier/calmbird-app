@@ -64,141 +64,156 @@ const Attachment = ({ type, ...data}) => {
   }
 };
 
-const ReTweet = ({
-  id,
-  liked,
-  retweeted,
-  currentUser: { id: currentUserId, token: authToken },
-  author: { profile_image_url, name, username, id: authorId },
-  referenced_tweet: { created_at, text, author: { username: originalAuthor }, attachments = [] },
-  metrics: { like_count, reply_count, retweet_count, quote_count }
-}) => {
-  const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
+class ReTweet extends React.PureComponent {
+  render() {
+    const {
+      id,
+      liked,
+      retweeted,
+      currentUser: { id: currentUserId, token: authToken },
+      author: { profile_image_url, name, username, id: authorId },
+      referenced_tweet: { created_at, text, author: { username: originalAuthor }, attachments = [] },
+      metrics: { like_count, reply_count, retweet_count, quote_count }
+    } = this.props;
 
-  return (
-    <View style={styles.tweet}>
-      <View style={styles.tweetAuthor}>
-        <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
-        <View>
-          <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
-            <Text style={styles.tweetAuthorName}>{name}</Text>
-            <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+    const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
+
+    return (
+      <View style={styles.tweet}>
+        <View style={styles.tweetAuthor}>
+          <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
+          <View>
+            <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
+              <Text style={styles.tweetAuthorName}>{name}</Text>
+              <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+            </View>
+            <Text style={styles.timestamp}>
+              {createdAt}
+            </Text>
           </View>
-          <Text style={styles.timestamp}>
-            {createdAt}
-          </Text>
         </View>
-      </View>
-      <View style={{ paddingLeft: 60, marginBottom: 10 }}>
-        <Text>RT @{originalAuthor}:</Text>
-        <Text></Text>
-        <Text>{text}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: 250 }}>
-          { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
-        </View>
-      </View>
-      {currentUserId === authorId ?
-        <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
-        <TweetActions {...{ id, liked, retweeted, authToken }} />}
-    </View>
-  );
-};
-
-const QuotedTweet = ({
-  id,
-  liked,
-  retweeted,
-  currentUser: { id: currentUserId, token: authToken },
-  author: { profile_image_url, name, username, id: authorId },
-  created_at,
-  text,
-  referenced_tweet,
-  metrics: { like_count, reply_count, retweet_count, quote_count }
-}) => {
-  const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
-
-  return (
-    <View style={styles.tweet}>
-      <View style={styles.tweetAuthor}>
-        <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
-        <View>
-          <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
-            <Text style={styles.tweetAuthorName}>{name}</Text>
-            <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+        <View style={{ paddingLeft: 60, marginBottom: 10 }}>
+          <Text>RT @{originalAuthor}:</Text>
+          <Text></Text>
+          <Text>{text}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', maxWidth: 250 }}>
+            { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
           </View>
-          <Text style={styles.timestamp}>
-            {createdAt}
-          </Text>
         </View>
+        {currentUserId === authorId ?
+          <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
+          <TweetActions {...{ id, liked, retweeted, authToken }} />}
       </View>
-      <View style={{ paddingLeft: 60 }}>
-        <Text>{text}</Text>
+    );
+  }
+}
+
+class QuotedTweet extends React.PureComponent {
+  render() {
+    const {
+      id,
+      liked,
+      retweeted,
+      currentUser: { id: currentUserId, token: authToken },
+      author: { profile_image_url, name, username, id: authorId },
+      created_at,
+      text,
+      referenced_tweet,
+      metrics: { like_count, reply_count, retweet_count, quote_count }
+    } = this.props;
+
+    const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
+
+    return (
+      <View style={styles.tweet}>
+        <View style={styles.tweetAuthor}>
+          <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
+          <View>
+            <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
+              <Text style={styles.tweetAuthorName}>{name}</Text>
+              <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+            </View>
+            <Text style={styles.timestamp}>
+              {createdAt}
+            </Text>
+          </View>
+        </View>
+        <View style={{ paddingLeft: 60 }}>
+          <Text>{text}</Text>
+        </View>
+        <View style={{ paddingLeft: 60, marginBottom: 10, transform: [{ scale: 0.9 }], maxWidth: '100%' }}>
+          <StatusTweet {...referenced_tweet} includeBadges={false} maxNameLength={25} />
+        </View>
+        {currentUserId === authorId ?
+          <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
+          <TweetActions {...{ id, liked, retweeted, authToken }} />}
       </View>
-      <View style={{ paddingLeft: 60, marginBottom: 10, transform: [{ scale: 0.9 }], maxWidth: '100%' }}>
-        <StatusTweet {...referenced_tweet} includeBadges={false} maxNameLength={25} />
-      </View>
-      {currentUserId === authorId ?
-        <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} /> :
-        <TweetActions {...{ id, liked, retweeted, authToken }} />}
-    </View>
-  );
-};
+    );
+  }
+}
 
 const ReplyTweet = () => {};
 
-const StatusTweet = ({
-  id,
-  liked,
-  retweeted,
-  currentUser: { id: currentUserId, token: authToken  } = {},
-  author: { profile_image_url, name, username, id: authorId },
-  created_at,
-  text,
-  attachments = [],
-  metrics: { like_count, reply_count, retweet_count, quote_count },
-  includeBadges = true,
-  maxNameLength = 35,
-}) => {
-  const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
+class StatusTweet extends React.PureComponent {
+  render() {
+    const {
+      id,
+      liked,
+      retweeted,
+      currentUser: { id: currentUserId, token: authToken  } = {},
+      author: { profile_image_url, name, username, id: authorId },
+      created_at,
+      text,
+      attachments = [],
+      metrics: { like_count, reply_count, retweet_count, quote_count },
+      includeBadges = true,
+      maxNameLength = 35,
+    } = this.props;
 
-  const fullNameLength = name.length + username.length + 1;
-  const truncatedName = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
+    const createdAt = (new Date(created_at)).toLocaleDateString(undefined, timestampDisplayOptions);
 
-  return (
-    <View style={[styles.tweet, includeBadges ? {} : { borderColor: '#999', borderWidth: 1, borderRadius: 10 }]}>
-      <View style={styles.tweetAuthor}>
-        <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
-        <View>
-          <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
-            <Text style={styles.tweetAuthorName}>{truncatedName}</Text>
-            <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+    const fullNameLength = name.length + username.length + 1;
+    const truncatedName = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
+
+    return (
+      <View style={[styles.tweet, includeBadges ? {} : { borderColor: '#999', borderWidth: 1, borderRadius: 10 }]}>
+        <View style={styles.tweetAuthor}>
+          <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={styles.tweetAuthorImage} />
+          <View>
+            <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
+              <Text style={styles.tweetAuthorName}>{truncatedName}</Text>
+              <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+            </View>
+            <Text style={styles.timestamp}>
+              {createdAt}
+            </Text>
           </View>
-          <Text style={styles.timestamp}>
-            {createdAt}
-          </Text>
         </View>
-      </View>
-      <View style={{ paddingLeft: 60, marginBottom: 10 }}>
-        <Text>{text}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: 250 }}>
-          { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
+        <View style={{ paddingLeft: 60, marginBottom: 10 }}>
+          <Text>{text}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', maxWidth: 250 }}>
+            { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
+          </View>
         </View>
+        {includeBadges && currentUserId === authorId && <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} />}
+        {includeBadges && currentUserId !== authorId && <TweetActions {...{ id, liked, retweeted, authToken }} />}
       </View>
-      {includeBadges && currentUserId === authorId && <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} />}
-      {includeBadges && currentUserId !== authorId && <TweetActions {...{ id, liked, retweeted, authToken }} />}
-    </View>
-  );
-};
+    );
+  }
+}
 
-export default function Tweet({ type, ...props}) {
-  switch(type) {
-    case 'quoted':
-      return <QuotedTweet {...props} />;
-    case 'replied_to':
-      return <StatusTweet {...props} />;
-    case 'retweeted':
-      return <ReTweet {...props} />;
-    default:
-      return <StatusTweet {...props} />;
+export default class Tweet extends React.PureComponent {
+  render() {
+    const { type, ...props } = this.props;
+    switch(type) {
+      case 'quoted':
+        return <QuotedTweet {...props} />;
+      case 'replied_to':
+        return <StatusTweet {...props} />;
+      case 'retweeted':
+        return <ReTweet {...props} />;
+      default:
+        return <StatusTweet {...props} />;
+    }
   }
 }
