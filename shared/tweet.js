@@ -94,7 +94,7 @@ const ReTweet = ({
         <Text></Text>
         <Text>{text}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-          { attachments.map((data) => <Attachment {...data} />) }
+          { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
         </View>
       </View>
       {currentUserId === authorId ?
@@ -181,7 +181,7 @@ const StatusTweet = ({
       <View style={{ paddingLeft: 60, marginBottom: 10 }}>
         <Text>{text}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-          { attachments.map((data) => <Attachment {...data} />) }
+          { attachments.map((data) => <Attachment id={data.media_key} {...data} />) }
         </View>
       </View>
       {includeBadges && currentUserId === authorId && <TweetBadges {...{ like_count, quote_count, retweet_count, reply_count }} />}
