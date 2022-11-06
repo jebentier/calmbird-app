@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { PureComponent, useState } from 'react';
 import {
   Text,
   View,
@@ -47,28 +47,31 @@ const AccountActions = ({ id, authToken, following: followingProp, inFeed: inFee
   );
 };
 
-export default function Account({ id, profile_image_url, name, username, description, following, inFeed, muted, blocked, currentUser: { token: authToken } }) {
-  const maxNameLength  = 35;
-  const fullNameLength = name.length + username.length + 1;
-  const truncatedName  = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
+export default class Account extends React.PureComponent {
+  render() {
+    const { id, profile_image_url, name, username, description, following, inFeed, muted, blocked, currentUser: { token: authToken } } = this.props;
+    const maxNameLength  = 35;
+    const fullNameLength = name.length + username.length + 1;
+    const truncatedName  = fullNameLength > maxNameLength ? `${name.slice(0, maxNameLength - username.length - 2)}...` : name;
 
-  return (
-    <View style={styles.tweet}>
-      <View style={styles.tweetAuthor}>
-        <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={[styles.tweetAuthorImage, { width: '15%' }]} />
-        <View style={{ width: '82%', paddingRight: '1%' }}>
-          <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
-            <Text style={styles.tweetAuthorName}>{truncatedName}</Text>
-            <Text style={styles.tweetAuthorUsername}>@{username}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', flex: 1, width: '100%' }}>
-            <Text style={styles.descriptionText}>
-              {description}
-            </Text>
+    return (
+      <View style={styles.tweet}>
+        <View style={styles.tweetAuthor}>
+          <Avatar size={50} rounded source={{ uri: profile_image_url }} containerStyle={[styles.tweetAuthorImage, { width: '15%' }]} />
+          <View style={{ width: '82%', paddingRight: '1%' }}>
+            <View style={{ ...styles.tweetAuthor, marginBottom: 0 }}>
+              <Text style={styles.tweetAuthorName}>{truncatedName}</Text>
+              <Text style={styles.tweetAuthorUsername}>@{username}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, width: '100%' }}>
+              <Text style={styles.descriptionText}>
+                {description}
+              </Text>
+            </View>
           </View>
         </View>
+        <AccountActions {...{ id, authToken, following, inFeed, muted, blocked }} />
       </View>
-      <AccountActions {...{ id, authToken, following, inFeed, muted, blocked }} />
-    </View>
-  );
+    );
+  }
 }
