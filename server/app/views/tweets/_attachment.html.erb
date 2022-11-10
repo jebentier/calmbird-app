@@ -1,0 +1,6 @@
+<% case attachment.type %>
+<% when "photo" %>
+  <img src="<%= attachment.url %>" class="block my-2 h-64 rounded mx-auto" />
+<% when "video" %>
+  <img src="<%= attachment.preview_image_url %>" class="block my-2 h-64 rounded mx-auto" />
+<% end %>

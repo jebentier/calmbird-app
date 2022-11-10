@@ -1,0 +1,7 @@
+<% if action_name != "conversation" %>
+  <% if tweet.retweet? %>
+  <%= link_to '+ Expand', url_for(action: :conversation, tweet_id: tweet.referenced_tweet.conversation_id || tweet.referenced_tweet.id), class: "inline-block bg-gray-200 border border-gray-900 text-black text-xs px-2 py-1 rounded-full mr-2" %>
+  <% else %>
+  <%= link_to '+ Expand', url_for(action: :conversation, tweet_id: tweet.conversation_id || tweet.id), class: "inline-block bg-gray-200 border border-gray-900 text-black text-xs px-2 py-1 rounded-full mr-2" %>
+  <% end %>
+<% end %>

@@ -1,0 +1,23 @@
+<div class="w-full block mb-5 p-4 bg-gray-200" style="word-break: break-word">
+  <div class="flex">
+    <img src="<%= author.profile_image_url %>" alt="<%= author.name %> Profile Image" class="inline-block rounded-full h-12 w-12 mr-2" />
+    <div class="inline-block">
+      <div class="block w-full flex flex-col mb-2">
+        <% if action_name != "user_profile" %>
+          <%= link_to author.name, url_for(action: :user_profile, user_id: author.id), class: "color-gray-900", target: '_top', turbo: false %>
+        <% else %>
+          <span class="color-gray-900"><%= author.name %></span>
+        <% end %>
+        <div class="color-gray-500 text-xs ml-2 my-auto">@<%= author.username %></div>
+      </div>
+    </div>
+    <div class="inline-block h-full m-auto mr-0">
+      <%= render partial: "/authors/actions/feed", locals: { user: author } %>
+      <%= render partial: "/authors/actions/mute", locals: { user: author } %>
+      <%= render partial: "/authors/actions/block", locals: { user: author } %>
+    </div>
+  </div>
+  <div class="w-full">
+    <p><%= author.description %></p>
+  </div>
+</div>

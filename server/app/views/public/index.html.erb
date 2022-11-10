@@ -1,0 +1,19 @@
+<h1 class="font-bold text-4xl text-blue-500 text-center">Welcome to Calmbird</h1>
+
+<% if current_user %>
+<div class="text-center">
+  <p class="m-auto">You are logged in as <%= current_user.name %> (@<%= current_user.username %>)</p>
+</div>
+<%= turbo_frame_tag 'tweets' do %>
+  <%= render @feed %>
+<% end %>
+<%= turbo_frame_tag 'pagination' do %>
+  <%= render partial: 'shared/pagination', locals: { pagination_token: @next_page } %>
+<% end %>
+<% unless @feed.present? %>
+  <div class="w-full block mb-5 p-4 bg-gray-200 mt-2">
+    <h2 class="text-black text-lg">It looks like you don't have anyone currently added to your Feed.</h2>
+    <p class="text-gray-800 text-sm">You can add people to your Feed from your <%= link_to 'Following', url_for(action: :following), class: "text-blue-500 cursor-pointer hover:underline" %> list, or by going and <%= link_to 'Discovering', url_for(action: :discover), class: "text-blue-500 cursor-pointer hover:underline" %> some content.</p>
+  </div>
+<% end %>
+<% end %>

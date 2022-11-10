@@ -1,0 +1,10 @@
+<%= form_tag url_for(action: :discover), method: :get, class: "mb-4" do %>
+  <%= text_field_tag :query, params[:query].presence || '', placeholder: 'Discovery tweet content!', class: "rounded p-2 w-full mb-3" %>
+  <%= submit_tag 'Discover', class: "bg-blue-500 text-white p-2 rounded cursor-pointer w-full" %>
+<% end %>
+<%= turbo_frame_tag 'tweets' do %>
+  <%= render @tweets %>
+<% end %>
+<%= turbo_frame_tag 'pagination' do %>
+  <%= render partial: 'shared/pagination', locals: { pagination_token: @next_page } %>
+<% end %>

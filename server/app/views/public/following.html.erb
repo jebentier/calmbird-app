@@ -1,0 +1,7 @@
+<h1>Following</h1>
+<%= turbo_frame_tag 'users' do %>
+  <%= render @users %>
+<% end %>
+<%= turbo_frame_tag 'pagination' do %>
+  <%= render partial: 'shared/pagination', locals: { pagination_token: @next_page } %>
+<% end %>

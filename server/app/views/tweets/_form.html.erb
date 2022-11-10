@@ -1,0 +1,42 @@
+<%= form_with(class: "flex w-full flex-col", data: { controller: 'new-tweet' }) do |f| %>
+  <div class="w-full mb-2" data-new-tweet-target="contentWrapper">
+    <%= f.text_area 'tweet[content][]', class: "rounded p-2 w-full", maxlength: 280, data: { action: 'keypress->new-tweet#handleChangeEvent change->new-tweet#handleChangeEvent paste->new-tweet#handleChangeEvent input->new-tweet#handleChangeEvent' } %>
+    <div class="flex flex-row">
+      <div class="progress-bar w-full h-2 bg-gray-200 my-auto">
+        <div class="progress-bar-fill w-0 h-2 bg-blue-300"></div>
+      </div>
+      <div class="progress-counter text-xs w-14 text-right">0/280</div>
+    </div>
+  </div>
+
+  <div class="bg-green-500 text-white p-2 rounded cursor-pointer mb-4 text-center" data-new-tweet-target="addThread">+ Thread</div>
+
+  <% if action_name != "new_reply_tweet" %>
+  <div class="flex w-full mb-4">
+    <span class="font-bold mr-2 flex-none my-auto">Who Can Reply?</span>
+    <%=
+      f.select(
+        'tweet[reply_settings]',
+        [['Everyone', :everyone], ['Only Users I Follow', :followers], ['Only Mentioned Users', :mentionedUsers]],
+        {},
+        class: "rounded flex-grow"
+      )
+    %>
+  </div>
+  <% end %>
+
+  <%= f.submit 'Send', class: "bg-blue-500 text-white p-2 rounded cursor-pointer" %>
+
+  <template data-new-tweet-target="contentWrapperTemplate">
+    <div class="w-full mb-2 ml-2 pl-2 border-l-4 border-gray-100" data-new-tweet-target="contentWrapper">
+      <%= f.text_area 'tweet[content][]', class: "rounded p-2 w-full", maxlength: 280, data: { action: 'keypress->new-tweet#handleChangeEvent' } %>
+      <div class="flex flex-row">
+        <div class="progress-bar w-full h-2 bg-gray-200 my-auto">
+          <div class="progress-bar-fill w-0 h-2 bg-blue-300"></div>
+        </div>
+        <div class="progress-counter text-xs w-14 text-right">0/280</div>
+        <div class="text-xs bg-red-500 text-white px-1 rounded ml-2 cursor-pointer" data-action="click->new-tweet#removeThread">x</div>
+      </div>
+    </div>
+  </template>
+<% end %>

@@ -1,0 +1,5 @@
+<% if current_user.liked_tweets.include?(tweet.id) %>
+<%= link_to 'Unlike', url_for(action: :unlike_tweet, tweet_id: tweet.id), class: "inline-block bg-green-500 text-white text-xs px-2 py-1 rounded-full mr-2" %>
+<% else %>
+<%= link_to 'Like', url_for(action: :like_tweet, tweet_id: tweet.id), class: "inline-block bg-green-500 text-white text-xs px-2 py-1 rounded-full mr-2" %>
+<% end %>

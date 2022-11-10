@@ -1,0 +1,5 @@
+<% if current_user.muted_users.include?(user.id) %>
+<%= link_to 'Unmute', url_for(action: :unmute_user, user_id: user.id), class: "inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% else %>
+<%= link_to 'Mute', url_for(action: :mute_user, user_id: user.id), class: "inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% end %>

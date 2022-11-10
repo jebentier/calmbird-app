@@ -1,0 +1,5 @@
+<% if current_user.blocked_users.include?(user.id) %>
+<%= link_to 'Unblock', url_for(action: :unblock_user, user_id: user.id), class: "inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% else %>
+<%= link_to 'Block', url_for(action: :block_user, user_id: user.id), class: "inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% end %>

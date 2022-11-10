@@ -1,0 +1,5 @@
+<% if local_assigns[:pagination_token] %>
+  <div class="text-center my-5" data-controller="pagination">
+    <%= link_to "Load More", url_for(action: action_name, **params.permit(:query).slice(:query).merge(pagination_token: local_assigns[:pagination_token])), class: "text-blue-500 border-blue-500 rounded px-2 py-4", data: { action: "click->pagination#click" } %>
+  </div>
+<% end %>

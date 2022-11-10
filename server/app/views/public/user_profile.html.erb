@@ -1,0 +1,8 @@
+<%= render @user %>
+<%= render @user.pinned_tweet if @user.pinned_tweet %>
+<%= turbo_frame_tag 'tweets' do %>
+  <%= render @tweets %>
+<% end %>
+<%= turbo_frame_tag 'pagination' do %>
+  <%= render partial: 'shared/pagination', locals: { pagination_token: @next_page } %>
+<% end %>

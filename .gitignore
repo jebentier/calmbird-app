@@ -1,3 +1,5 @@
+# Client
+
 node_modules/
 .expo/
 dist/
@@ -9,6 +11,26 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+
+# Server
+/server/.bundle
+/server/log/*
+/server/tmp/*
+!/server/log/.keep
+!/server/tmp/.keep
+/server/tmp/pids/*
+!/server/tmp/pids/
+!/server/tmp/pids/.keep
+/server/storage/*
+!/server/storage/.keep
+/server/tmp/storage/*
+!/server/tmp/storage/
+!/server/tmp/storage/.keep
+/server/public/assets
+/server/config/master.key
+/server/app/assets/builds/*
+!/server/app/assets/builds/.keep
+*.env
 
 # macOS
 .DS_Store

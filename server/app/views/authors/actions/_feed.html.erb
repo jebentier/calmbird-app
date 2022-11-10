@@ -1,0 +1,5 @@
+<% if current_user.feed_member_list.include?(user.id) %>
+<%= link_to '- Remove from Feed', url_for(action: :remove_from_feed, user_id: user.id), class:"inline-block bg-gray-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% else %>
+<%= link_to '+ Add to Feed', url_for(action: :add_to_feed, user_id: user.id), class:"inline-block bg-gray-500 text-white text-xs px-2 py-1 rounded-full mr-1" %>
+<% end %>

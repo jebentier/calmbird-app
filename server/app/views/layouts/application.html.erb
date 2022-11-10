@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calmbird</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+
+    <link href="http://fonts.cdnfonts.com/css/franklin-gothic" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Helvetica', sans-serif;
+      }
+    </style>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <%= render partial: 'shared/header' %>
+    <main class="container mx-auto mt-5 px-5 max-w-screen-sm" data-controller='tweet'>
+      <%= yield %>
+    </main>
+
+    <% if current_user && !action_name.in?(["new_tweet", "new_reply_tweet", "new_quote_tweet"]) %>
+    <%= link_to '+ Tweet', url_for(action: :new_tweet), class: "fixed bottom-2 right-4 bg-blue-500 text-white px-4 py-2 rounded-full" %>
+    <% end %>
+  </body>
+</html>

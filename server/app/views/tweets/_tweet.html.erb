@@ -1,0 +1,54 @@
+<div class="w-full block mb-5 p-4 bg-gray-200" style="word-break: break-word">
+  <div class="flex">
+    <img src="<%= tweet.author.profile_image_url %>" alt="<%= tweet.author.name %> Profile Image" class="inline-block rounded-full h-12 w-12 mr-2" />
+    <div class="inline-block">
+      <div class="block w-full flex mb-2">
+        <% if action_name != "user_profile" %>
+          <%= link_to tweet.author.name, url_for(action: :user_profile, user_id: tweet.author.id), class: "color-gray-900", target: '_top', turbo: false %>
+        <% else %>
+          <span class="color-gray-900"><%= tweet.author.name %></span>
+        <% end %>
+        <span class="color-gray-500 text-xs ml-2 my-auto">@<%= tweet.author.username %></span>
+      </div>
+      <div class="mb-2 text-sm">
+        <%= I18n.l(Time.parse(tweet.created_at), format: :short) %>
+      </div>
+      <% if tweet.referenced_tweet && (action_name != "conversation" || tweet.referenced_tweet.id != params[:tweet_id]) %>
+        <% if tweet.type.in?(["quoted", "replied_to"]) %>
+         <% tweet.text.split("\n").each do |line| %>
+            <p data-tweet-target='tweet'><%= line %></p>
+          <% end %>
+          <div class="border-l-4 border-white mt-2">
+            <%= render tweet.referenced_tweet, without_actions: true %>
+          </div>
+        <% else %>
+          <% "RT: #{tweet.referenced_tweet.text}".split("\n").each do |line| %>
+            <p data-tweet-target='tweet'><%= line %></p>
+          <% end %>
+          <%= render tweet.attachments %>
+        <% end %>
+      <% else %>
+        <% tweet.text.split("\n").each do |line| %>
+          <p data-tweet-target='tweet'><%= line %></p>
+        <% end %>
+        <%= render tweet.attachments %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex border-t mt-3 items-baseline <%= 'hidden' if action_name.in?(['new_reply_tweet', 'new_quote_tweet']) %>">
+    <% if current_user.uid == tweet.author.id %>
+    <%= render partial: "/tweets/badges/like", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/badges/quote", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/badges/retweet", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/badges/reply", locals: { tweet: tweet } %>
+    <% elsif !local_assigns[:without_actions] %>
+    <%= render partial: "/tweets/actions/like", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/actions/reply", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/actions/retweet", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/actions/quote", locals: { tweet: tweet } %>
+    <% end %>
+    <%= render partial: "/tweets/actions/expand", locals: { tweet: tweet } %>
+    <%= render partial: "/tweets/actions/delete", locals: { tweet: tweet } %>
+  </div>
+</div>

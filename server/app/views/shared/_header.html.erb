@@ -1,0 +1,39 @@
+<nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6" data-controller='navigation'>
+  <div class="flex items-center flex-shrink-0 text-white mr-6">
+    <img class="fill-current h-8 w-8 mr-2" width="54" height="54" src="<%= image_url("robin.png") %>" />
+    <span class="font-semibold text-xl tracking-tight">Calmbird</span>
+  </div>
+  <div class="block lg:hidden">
+    <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white" data-navigation-target='menuToggle'>
+      <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+    </button>
+  </div>
+  <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto hidden" data-navigation-target='menu'>
+
+    <div class="text-sm lg:flex-grow">
+      <% if current_user %>
+        <% {
+          index: 'My Feed',
+          tweets: 'My Tweets',
+          likes: 'Likes',
+          following: 'Following',
+          discover: 'Discover'
+        }.each do |action, label| %>
+          <% if action_name.to_sym == action %>
+            <span class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 mr-4 font-bold text-gray-800 cursor-default"><%= label %></span>
+          <% else %>
+            <%= link_to label, url_for(action: action), class: "block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="lg:flex lg:flex-row">
+      <% if current_user %>
+        <%= link_to 'New Tweet', url_for(action: :new_tweet), class: "inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0 lg:mr-2" %>
+        <%= button_to 'Logout', destroy_user_session_url, method: :delete, class: "inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0" %>
+      <% else %>
+        <%= link_to "Sign In", url_for(controller: :public, action: :twitter), class: "inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0" %>
+      <% end %>
+    </div>
+  </div>
+</nav>
